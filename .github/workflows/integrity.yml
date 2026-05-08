@@ -1,0 +1,329 @@
+name: Monorepo Integrity
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  integrity-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ hashFiles('turbo.json') }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
+      - name: Run integrity + auto-fix + boilerplate
+        id: integrity
+        shell: pwsh
+        run: |
+          Write-Host "=== RapYard Monorepo Integrity + Auto-Fix ===`n"
+
+          $expected = @(
+              "apps/rapyard-web",
+              "apps/rapyard-web/src",
+              "apps/rapyard-web/public",
+              "apps/rapyard-web/package.json",
+              "apps/rapyard-web/tsconfig.json",
+              "apps/rapyard-web/vercel.json",
+              "apps/rapyard-web/index.html",
+
+              "apps/rapyard-app",
+              "apps/rapyard-app/src",
+              "apps/rapyard-app/public",
+              "apps/rapyard-app/package.json",
+              "apps/rapyard-app/tsconfig.json",
+              "apps/rapyard-app/vercel.json",
+              "apps/rapyard-app/index.html",
+
+              "apps/rapyard-admin",
+              "apps/rapyard-admin/src",
+              "apps/rapyard-admin/public",
+              "apps/rapyard-admin/package.json",
+              "apps/rapyard-admin/tsconfig.json",
+              "apps/rapyard-admin/vercel.json",
+              "apps/rapyard-admin/index.html",
+
+              "apps/spendshield/core",
+              "apps/spendshield/core/src",
+              "apps/spendshield/core/package.json",
+              "apps/spendshield/core/tsconfig.json",
+              "apps/spendshield/core/.env.example",
+
+              "apps/spendshield/worker",
+              "apps/spendshield/worker/src",
+              "apps/spendshield/worker/package.json",
+              "apps/spendshield/worker/tsconfig.json",
+              "apps/spendshield/worker/.env.example",
+
+              "apps/spendshield/ledger",
+              "apps/spendshield/ledger/src",
+              "apps/spendshield/ledger/package.json",
+              "apps/spendshield/ledger/tsconfig.json",
+              "apps/spendshield/ledger/.env.example",
+
+              "apps/spendshield/notifications",
+              "apps/spendshield/notifications/src",
+              "apps/spendshield/notifications/package.json",
+              "apps/spendshield/notifications/tsconfig.json",
+              "apps/spendshield/notifications/.env.example",
+
+              "apps/spendshield/ai-scoring",
+              "apps/spendshield/ai-scoring/src",
+              "apps/spendshield/ai-scoring/package.json",
+              "apps/spendshield/ai-scoring/tsconfig.json",
+              "apps/spendshield/ai-scoring/.env.example",
+
+              "apps/spendshield/ingest",
+              "apps/spendshield/ingest/src",
+              "apps/spendshield/ingest/package.json",
+              "apps/spendshield/ingest/tsconfig.json",
+              "apps/spendshield/ingest/.env.example",
+
+              "packages/ui",
+              "packages/ui/src",
+              "packages/ui/package.json",
+              "packages/ui/tsconfig.json",
+
+              "packages/config",
+              "packages/config/package.json",
+              "packages/config/tsconfig.json",
+
+              "packages/tsconfig",
+              "packages/tsconfig/base.json",
+              "packages/tsconfig/react.json",
+              "packages/tsconfig/node.json",
+
+              "package.json",
+              "pnpm-workspace.yaml",
+              "turbo.json",
+              "tsconfig.json",
+              "README.md"
+          )
+
+          function Write-Boilerplate {
+              param(
+                  [string]$Path,
+                  [string]$Content
+              )
+
+              if ((Get-Content $Path -ErrorAction SilentlyContinue) -eq $null -or
+                  (Get-Content $Path | Measure-Object -Line).Lines -eq 0) {
+                  Write-Host "[BOILERPLATE] $Path" -ForegroundColor Cyan
+                  Set-Content -Path $Path -Value $Content
+              }
+          }
+
+          $boilerplate = @{
+              "vercel.json" = @"
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ]
+}
+"@
+
+              "index.html" = @"
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>RapYard</title>
+  </head>
+  <body>
+    <div id='root'></div>
+    <script type='module' src='/src/main.tsx'></script>
+  </body>
+</html>
+"@
+
+              "frontend-package.json" = @"
+{
+  "name": "rapyard-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
+"@
+
+              "frontend-tsconfig.json" = @"
+{
+  "extends": "../../packages/tsconfig/react.json",
+  "include": ["src"]
+}
+"@
+
+              "backend-package.json" = @"
+{
+  "name": "spendshield-service",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  }
+}
+"@
+
+              "backend-tsconfig.json" = @"
+{
+  "extends": "../../../packages/tsconfig/node.json",
+  "include": ["src"]
+}
+"@
+
+              ".env.example" = @"
+SUPABASE_URL=
+SUPABASE_KEY=
+"@
+
+              "turbo.json" = @"
+{
+  "pipeline": {
+    "build": { "dependsOn": ["^build"], "outputs": ["dist/**"] },
+    "dev": { "cache": false }
+  }
+}
+"@
+
+              "root-tsconfig.json" = @"
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/tsconfig" }
+  ]
+}
+"@
+
+              "pnpm-workspace.yaml" = @"
+packages:
+  - 'apps/*'
+  - 'apps/spendshield/*'
+  - 'packages/*'
+"
+          }
+
+          $missing = @()
+
+          foreach ($item in $expected) {
+              $fullPath = Join-Path (Get-Location) $item
+
+              if (Test-Path $fullPath) {
+                  Write-Host "[OK]       $item" -ForegroundColor Green
+                  continue
+              }
+
+              # Auto-create folders/files
+              if ($item -match "\.[a-zA-Z0-9]+$") {
+                  $dir = Split-Path $fullPath -Parent
+                  if (-not (Test-Path $dir)) {
+                      Write-Host "[CREATE]   Folder: $dir" -ForegroundColor Yellow
+                      New-Item -ItemType Directory -Path $dir | Out-Null
+                  }
+                  Write-Host "[CREATE]   File:   $item" -ForegroundColor Yellow
+                  New-Item -ItemType File -Path $fullPath | Out-Null
+              } else {
+                  Write-Host "[CREATE]   Folder: $item" -ForegroundColor Yellow
+                  New-Item -ItemType Directory -Path $fullPath | Out-Null
+              }
+
+              $missing += $item
+          }
+
+          # Apply boilerplate
+          foreach ($item in $expected) {
+              $fullPath = Join-Path (Get-Location) $item
+              if (Test-Path $fullPath -PathType Leaf) {
+                  $fileName = Split-Path $fullPath -Leaf
+
+                  switch ($fileName) {
+                      "vercel.json" { Write-Boilerplate $fullPath $boilerplate["vercel.json"] }
+                      "index.html" { Write-Boilerplate $fullPath $boilerplate["index.html"] }
+
+                      "package.json" {
+                          if ($fullPath -like "*rapyard*") {
+                              Write-Boilerplate $fullPath $boilerplate["frontend-package.json"]
+                          } elseif ($fullPath -like "*spendshield*") {
+                              Write-Boilerplate $fullPath $boilerplate["backend-package.json"]
+                          } else {
+                              Write-Boilerplate $fullPath "{ }"
+                          }
+                      }
+
+                      "tsconfig.json" {
+                          if ($fullPath -like "*rapyard*") {
+                              Write-Boilerplate $fullPath $boilerplate["frontend-tsconfig.json"]
+                          } elseif ($fullPath -like "*spendshield*") {
+                              Write-Boilerplate $fullPath $boilerplate["backend-tsconfig.json"]
+                          } else {
+                              Write-Boilerplate $fullPath $boilerplate["root-tsconfig.json"]
+                          }
+                      }
+
+                      ".env.example" { Write-Boilerplate $fullPath $boilerplate[".env.example"] }
+                      "turbo.json" { Write-Boilerplate $fullPath $boilerplate["turbo.json"] }
+                      "pnpm-workspace.yaml" { Write-Boilerplate $fullPath $boilerplate["pnpm-workspace.yaml"] }
+                  }
+              }
+          }
+
+          # Detect if anything was missing (even though we auto-fixed)
+          if ($missing.Count -gt 0) {
+              $msg = "Monorepo integrity failed. The following items were missing and auto-created:`n" +
+                     ($missing | ForEach-Object { " - $_" } | Out-String)
+
+              Write-Host "`n❌ $msg"
+              # Expose for PR comment
+              echo "missing<<EOF" >> $env:GITHUB_OUTPUT
+              echo $msg >> $env:GITHUB_OUTPUT
+              echo "EOF" >> $env:GITHUB_OUTPUT
+              exit 1
+          }
+
+          Write-Host "`n✅ Monorepo integrity passed."
+          echo "missing=" >> $env:GITHUB_OUTPUT
+
+      - name: Comment on PR with integrity results
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const missing = `${{ steps.integrity.outputs.missing }}`;
+            const body = missing
+              ? `❌ **Monorepo integrity failed**\n\n${missing}\n\nPlease run the integrity/boilerplate script locally and commit the changes.`
+              : `✅ Monorepo integrity passed.`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              issue_number: context.issue.number,
+              body
+            })
