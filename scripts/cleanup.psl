@@ -1,0 +1,107 @@
+Write-Host "=== RAPYARD REPO CLEANUP START ===" -ForegroundColor Cyan
+
+# Ensure we are at repo root
+$root = git rev-parse --show-toplevel 2>$null
+if (-not $root) {
+    Write-Host "ERROR: This folder is not a Git repository." -ForegroundColor Red
+    exit 1
+}
+
+Set-Location $root
+Write-Host "Repo root: $root" -ForegroundColor Yellow
+
+# 1. Unstage everything
+Write-Host "`n-- Unstaging all files --" -ForegroundColor Cyan
+git reset
+
+# 2. Delete .vercel (build artifacts + nested git repo)
+if (Test-Path ".vercel") {
+    Write-Host "Deleting .vercel folder..." -ForegroundColor Yellow
+    Remove-Item -Recurse -Force ".vercel" -ErrorAction SilentlyContinue
+}
+
+# 3. Delete accidental build artifacts
+$junk = @(
+    ".modules.yaml",
+    ".package-lock.json",
+    ".pnpm-workspace-state-v1.json"
+)
+
+foreach ($file in $junk) {
+    if (Test-Path $file) {
+        Write-Host "Removing $file ..." -ForegroundColor Yellow
+        Remove-Item -Force $file -ErrorAction SilentlyContinue
+    }
+}
+
+# 4. Delete dependency pollution inside apps/
+Write-Host "`n-- Cleaning dependency folders inside apps/ --" -ForegroundColor Cyan
+
+Get-ChildItem -Path "apps" -Directory -Filter "@*" -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Host "Removing $($_.FullName)" -ForegroundColor Yellow
+    Remove-Item -Recurse -Force $_.FullName -ErrorAction SilentlyContinue
+}
+
+Get-ChildItem -Path "apps" -Recurse -Directory -Filter "node_modules" -ErrorAction SilentlyContinue | ForEach-Object {
+    Write-Host "Removing $($_.FullName)" -ForegroundColor Yellow
+    Remove-Item -Recurse -Force $_.FullName -ErrorAction SilentlyContinue
+}
+
+if (Test-Path "apps\.pnpm") {
+    Write-Host "Removing apps/.pnpm ..." -ForegroundColor Yellow
+    Remove-Item -Recurse -Force "apps\.pnpm" -ErrorAction SilentlyContinue
+}
+
+# 5. Rebuild .gitignore
+Write-Host "`n-- Rebuilding .gitignore --" -ForegroundColor Cyan
+
+@"
+# Node
+node_modules/
+.pnpm/
+.pnpm-store/
+.pnpm-workspace-state-v1.json
+
+# Build output
+dist/
+build/
+.expo/
+.expo-shared/
+.next/
+out/
+.vercel/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Expo / React Native
+apps/**/node_modules/
+apps/**/.expo/
+apps/**/.expo-shared/
+apps/**/android/
+apps/**/ios/
+
+# Vercel
+.vercel/
+"@ | Set-Content ".gitignore"
+
+Write-Host "Updated .gitignore" -ForegroundColor Green
+
+# 6. Clean ignored files
+Write-Host "`n-- Running git clean (ignored files only) --" -ForegroundColor Cyan
+git clean -fdX
+
+# 7. Reinstall dependencies
+Write-Host "`n-- Reinstalling dependencies with pnpm --" -ForegroundColor Cyan
+pnpm install
+
+# 8. Final status
+Write-Host "`n=== CLEANUP COMPLETE ===" -ForegroundColor Green
+git status
