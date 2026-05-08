@@ -1,0 +1,64 @@
+name: RapYard CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - "feature/**"
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Turbo cache restore
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache
+          key: turbo-${{ github.sha }}
+          restore-keys: |
+            turbo-
+
+      - name: Lint
+        run: pnpm turbo run lint --continue
+
+      - name: Type Check
+        run: pnpm turbo run typecheck --continue
+
+      - name: Build
+        run: pnpm turbo run build --continue
+
+      - name: Turbo cache save
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.cache
+          key: turbo-${{ github.sha }}
+
+      - name: Tests
+        run: pnpm turbo run test --continue
+
