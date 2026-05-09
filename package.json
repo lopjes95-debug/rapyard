@@ -1,26 +1,17 @@
 ﻿{
   "name": "rapyard",
   "private": true,
-  "version": "1.0.0",
   "workspaces": [
     "apps/*",
-    "packages/*",
-    "api",
-    "workers",
-    "infra"
+    "packages/*"
   ],
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
-    "lint": "turbo run lint",
-    "clean": "turbo run clean",
-    "typecheck": "turbo run typecheck"
+    "lint": "turbo run lint"
   },
   "devDependencies": {
     "turbo": "latest",
-    "typescript": "5.4.5",
-    "@types/node": "20.12.7",
-    "prettier": "3.2.5"
-  },
-  "packageManager": "pnpm@9.0.0"
+    "typescript": "5.x"
+  }
 }

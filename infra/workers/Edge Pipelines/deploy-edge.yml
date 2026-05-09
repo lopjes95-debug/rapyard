@@ -1,0 +1,15 @@
+  dashboard:
+    runs-on: ubuntu-latest
+    needs: [deploy_prod]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Dashboard
+        uses: ./.github/actions/deploy-dashboard
+        with:
+          web_status: "N/A"
+          mobile_status: "N/A"
+          edge_status: ${{ needs.deploy_prod.result }}
+          workers_status: "N/A"
+          infra_status: "N/A"
+          canary_status: "N/A"
+          last_release: ${{ github.sha }}

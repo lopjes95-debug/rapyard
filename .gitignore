@@ -1,18 +1,34 @@
 # Node
 node_modules/
-.pnpm/
-.pnpm-store/
-.pnpm-workspace-state-v1.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Build output
+# Turbo
+.turbo/
+turbo.json.lock
+
+# Build outputs
 dist/
 build/
-.expo/
-.expo-shared/
 .next/
 out/
-.vercel/
-.vscode/
+.expo/
+.expo-shared/
+
+# Expo
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.keystore
+
+# Logs
+logs/
+*.log
+*.log.*
 
 # OS
 .DS_Store
@@ -20,15 +36,21 @@ Thumbs.db
 
 # Env
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
-# Expo / React Native
-apps/**/node_modules/
-apps/**/.expo/
-apps/**/.expo-shared/
-apps/**/android/
-apps/**/ios/
+# Supabase
+supabase/.branches
+supabase/.temp
+supabase/.config
 
-# Vercel
-.vercel/
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/.terraform.lock.hcl
+
+# Workers
+*.pid
+
+# Editor
+.vscode/
+.idea/
