@@ -1,13 +1,7 @@
 {
-  "name": "ui",
-  "version": "0.0.1",
+  "name": "@rapyard/ui",
   "main": "src/index.ts",
-  "react-native": "src/index.ts",
-  "sideEffects": false,
-  "dependencies": {
-    "react": "*",
-    "react-native": "*"
-  }
+  "react-native": "src/index.ts"
 }
 
   
