@@ -1,0 +1,152 @@
+name: RapYard Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  web:
+    name: Web Deploy
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.mark.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web
+        run: pnpm --filter apps/web build
+
+      - name: Mark status
+        id: mark
+        run: echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
+
+  mobile:
+    name: Mobile Build
+    runs-on: ubuntu-latest
+    needs: web
+    outputs:
+      status: ${{ steps.mark.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build mobile
+        run: pnpm --filter apps/mobile build
+
+      - name: Mark status
+        id: mark
+        run: echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
+
+  edge:
+    name: Supabase Edge
+    runs-on: ubuntu-latest
+    needs: web
+    outputs:
+      status: ${{ steps.mark.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy edge functions
+        run: |
+          echo "TODO: supabase functions deploy"
+          # supabase functions deploy ...
+
+      - name: Mark status
+        id: mark
+        run: echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
+
+  workers:
+    name: Workers
+    runs-on: ubuntu-latest
+    needs: web
+    outputs:
+      status: ${{ steps.mark.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy workers
+        run: |
+          echo "TODO: deploy background workers"
+          # e.g. fly deploy / cloudflare workers / etc
+
+      - name: Mark status
+        id: mark
+        run: echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
+
+  infra:
+    name: Infra
+    runs-on: ubuntu-latest
+    needs: [web, edge]
+    outputs:
+      status: ${{ steps.mark.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Terraform plan & apply
+        run: |
+          echo "TODO: terraform plan/apply"
+          # terraform init
+          # terraform plan
+          # terraform apply -auto-approve
+
+      - name: Mark status
+        id: mark
+        run: echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
+
+  canary:
+    name: Canary
+    runs-on: ubuntu-latest
+    needs: [web, mobile]
+    outputs:
+      status: ${{ steps.mark.outcome }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run canary tests
+        run: |
+          echo "TODO: run canary / smoke tests"
+          # e2e tests against canary env
+
+      - name: Mark status
+        id: mark
+        run: echo "status=${{ job.status }}" >> $GITHUB_OUTPUT
+
+  dashboard:
+    name: Deploy Dashboard
+    runs-on: ubuntu-latest
+    needs: [web, mobile, edge, workers, infra, canary]
+    steps:
+      - name: Render RapYard Deploy Dashboard
+        uses: ./.github/actions/deploy-dashboard
+        with:
+          web_status: ${{ needs.web.outputs.status }}
+          mobile_status: ${{ needs.mobile.outputs.status }}
+          edge_status: ${{ needs.edge.outputs.status }}
+          workers_status: ${{ needs.workers.outputs.status }}
+          infra_status: ${{ needs.infra.outputs.status }}
+          canary_status: ${{ needs.canary.outputs.status }}
+          last_release: ${{ github.sha }}
+

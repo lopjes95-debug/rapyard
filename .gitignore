@@ -54,3 +54,5 @@ infra/terraform/.terraform.lock.hcl
 # Editor
 .vscode/
 .idea/
+.vercel
+.env*.local

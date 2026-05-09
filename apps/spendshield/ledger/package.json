@@ -1,9 +1,4 @@
 {
-  "name": "rapyard-frontend",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  }
+  "name": "ledger",
+  "version": "1.0.0"
 }

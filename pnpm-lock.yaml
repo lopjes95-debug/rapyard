@@ -8,30 +8,12 @@ importers:
 
   .:
     devDependencies:
-      '@types/node':
-        specifier: 20.12.7
-        version: 20.12.7
-      prettier:
-        specifier: 3.2.5
-        version: 3.2.5
       turbo:
         specifier: latest
         version: 2.9.12
       typescript:
-        specifier: 5.4.5
+        specifier: 5.x
         version: 5.4.5
-
-  apps/spendshield/ai-scoring: {}
-
-  apps/spendshield/core: {}
-
-  apps/spendshield/ingest: {}
-
-  apps/spendshield/ledger: {}
-
-  apps/spendshield/notifications: {}
-
-  apps/spendshield/worker: {}
 
   packages/config: {}
 
@@ -1073,11 +1055,6 @@ packages:
   plist@3.1.1:
     resolution: {integrity: sha512-ZIfcLJC+7E7FBFnDxm9MPmt7D+DidyQ26lewieO75AdhA2ayMtsJSES0iWzqJQbcVRSrTufQoy0DR94xHue0oA==}
     engines: {node: '>=10.4.0'}
-
-  prettier@3.2.5:
-    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
-    engines: {node: '>=14'}
-    hasBin: true
 
   pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
@@ -2586,8 +2563,6 @@ snapshots:
       '@xmldom/xmldom': 0.9.10
       base64-js: 1.5.1
       xmlbuilder: 15.1.1
-
-  prettier@3.2.5: {}
 
   pretty-format@29.7.0:
     dependencies:

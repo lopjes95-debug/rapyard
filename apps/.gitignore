@@ -31,4 +31,4 @@ apps/**/android/
 apps/**/ios/
 
 # Vercel
-.vercel/
+vercel/.

@@ -2,7 +2,10 @@ name: RapYard CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - dev
+      - "feature/**"
   pull_request:
 
 jobs:
@@ -10,43 +13,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - name: Install Node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: "pnpm"
 
-      - name: Install deps
-        run: pnpm install
-
-      - name: Turbo cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: turbo-${{ github.sha }}
-          restore-keys: turbo-
-
-      - name: Typecheck
-        run: pnpm typecheck
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm turbo run lint --continue
+
+      - name: Type Check
+        run: pnpm turbo run typecheck --continue
 
       - name: Build
-        run: pnpm build
+        run: pnpm turbo run build --continue
 
-      - name: Deploy API
-        run: echo "Deploy API here"
-
-      - name: Deploy Workers
-        run: echo "Deploy Workers here"
-
-      - name: Deploy Web
-        run: echo "Deploy Web here"
+      - name: Tests
+        run: pnpm turbo run test --continue
 
