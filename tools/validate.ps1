@@ -1,0 +1,1 @@
+pwsh ./tools/validate.ps1

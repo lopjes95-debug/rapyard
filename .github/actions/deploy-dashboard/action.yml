@@ -1,53 +1,5 @@
-name: "RapYard Deploy Dashboard"
-description: "Unified dashboard for web, mobile, workers, edge, and infra deploys"
-
-inputs:
-  web_status:
-    required: true
-  mobile_status:
-    required: true
-  edge_status:
-    required: true
-  workers_status:
-    required: true
-  infra_status:
-    required: true
-  canary_status:
-    required: true
-  last_release:
-    required: true
-
+name: "Render RapYard Deploy Dashboard"
+description: "Generates the unified deployment dashboard for RapYard"
 runs:
-  using: "composite"
-  steps:
-    - name: Render Deploy Dashboard
-      shell: bash
-      run: |
-        echo "### 🚀 RapYard Deploy Dashboard" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "**Latest Release:** \`${{ inputs.last_release }}\`" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
-        echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
-        echo "| Web | ${{ inputs.web_status }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Mobile | ${{ inputs.mobile_status }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Supabase Edge | ${{ inputs.edge_status }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Workers | ${{ inputs.workers_status }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Infra | ${{ inputs.infra_status }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Canary | ${{ inputs.canary_status }} |" >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "#### 🔍 Logs & Artifacts" >> $GITHUB_STEP_SUMMARY
-        echo "- Web build artifacts" >> $GITHUB_STEP_SUMMARY
-        echo "- Mobile APK / AAB" >> $GITHUB_STEP_SUMMARY
-        echo "- Test Lab results" >> $GITHUB_STEP_SUMMARY
-        echo "- Edge function logs" >> $GITHUB_STEP_SUMMARY
-        echo "- Terraform plan/apply logs" >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "#### 🛠 Rollback Controls" >> $GITHUB_STEP_SUMMARY
-        echo "- Use \`workflow_dispatch\` → Rollback Web" >> $GITHUB_STEP_SUMMARY
-        echo "- Use \`workflow_dispatch\` → Rollback Mobile" >> $GITHUB_STEP_SUMMARY
-        echo "- Use \`workflow_dispatch\` → Rollback Infra" >> $GITHUB_STEP_SUMMARY
+  using: "node20"
+  main: "index.js"
