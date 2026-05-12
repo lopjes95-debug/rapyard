@@ -1,0 +1,9 @@
+
+    Step1PickLane.tsx
+    Step2Style.tsx
+    Step3MicCheck.tsx
+    TeaserBattles.tsx
+    TeaserMixtapes.tsx
+    TeaserProducers.tsx
+    TeaserRappers.tsx
+    TeaserRoyalties.tsx

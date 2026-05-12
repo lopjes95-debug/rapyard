@@ -1,0 +1,11 @@
+package.json
+tsconfig.json
+next.config.mjs
+src/
+  app/
+    layout.tsx
+    page.tsx
+    proposals/page.tsx
+    voting/page.tsx
+    constitution/page.tsx
+    api/hello/route.ts
