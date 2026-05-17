@@ -128,117 +128,18 @@ jobs:
               param(
                   [string]$Path,
                   [string]$Content
-              )
-
-              if ((Get-Content $Path -ErrorAction SilentlyContinue) -eq $null -or
-                  (Get-Content $Path | Measure-Object -Line).Lines -eq 0) {
-                  Write-Host "[BOILERPLATE] $Path" -ForegroundColor Cyan
-                  Set-Content -Path $Path -Value $Content
-              }
-          }
-
-          $boilerplate = @{
-              "vercel.json" = @"
-{
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
-}
-"@
-
-              "index.html" = @"
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='UTF-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <title>RapYard</title>
-  </head>
-  <body>
-    <div id='root'></div>
-    <script type='module' src='/src/main.tsx'></script>
-  </body>
-</html>
-"@
-
-              "frontend-package.json" = @"
-{
-  "name": "rapyard-frontend",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+           "vercel.json": |
+  {
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/" }
+    ]
   }
-}
-"@
-
-              "frontend-tsconfig.json" = @"
-{
-  "extends": "../../packages/tsconfig/react.json",
-  "include": ["src"]
-}
-"@
-
-              "backend-package.json" = @"
-{
-  "name": "spendshield-service",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
-  }
-}
-"@
-
-              "backend-tsconfig.json" = @"
-{
-  "extends": "../../../packages/tsconfig/node.json",
-  "include": ["src"]
-}
-"@
 
               ".env.example" = @"
 SUPABASE_URL=
-SUPABASE_KEY=
-"@
-
-              "turbo.json" = @"
-{
-  "pipeline": {
-    "build": { "dependsOn": ["^build"], "outputs": ["dist/**"] },
-    "dev": { "cache": false }
-  }
-}
-"@
-
-              "root-tsconfig.json" = @"
-{
-  "files": [],
-  "references": [
-    { "path": "./packages/tsconfig" }
-  ]
-}
-"@
-
-              "pnpm-workspace.yaml" = @"
-packages:
-  - 'apps/*'
-  - 'apps/spendshield/*'
-  - 'packages/*'
-"
-          }
-
-          $missing = @()
-
-          foreach ($item in $expected) {
-              $fullPath = Join-Path (Get-Location) $item
-
-              if (Test-Path $fullPath) {
-                  Write-Host "[OK]       $item" -ForegroundColor Green
-                  continue
-              }
+" vercel.json "
+" index.html "
+" package.json "
 
               # Auto-create folders/files
               if ($item -match "\.[a-zA-Z0-9]+$") {
