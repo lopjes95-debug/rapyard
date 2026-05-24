@@ -1,0 +1,11 @@
+{
+  "name": "rapyard",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "scripts"
+  ],
+  "devDependencies": {
+    "turbo": "latest"
+  }
+}
