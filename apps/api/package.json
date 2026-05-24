@@ -1,11 +1,4 @@
-﻿{
-  "name": "api",
-  "private": true,
-  "scripts": {
-    "dev": "tsx src/index.ts",
-    "build": "tsc -p tsconfig.json"
-  },
-  "devDependencies": {
-    "tsx": "^4.0.0"
-  }
+{
+  "name": "rapyard-api",
+  "version": "1.0.0"
 }

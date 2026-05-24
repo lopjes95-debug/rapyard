@@ -1,34 +1,10 @@
 {
-  "rewrites": [
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "^preview\\.rapyard\\.club$"
-        }
-      ],
-      "destination": "/"
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "^apps\\.(?<app>[^\\.]+)\\.rapyard\\.club$"
-        }
-      ],
-      "destination": "/apps/:app"
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "^(?<tenant>[^\\.]+)\\.rapyard\\.club$"
-        }
-      ],
-      "destination": "/tenant/:tenant"
-    }
+  "version": 2,
+  "builds": [
+    { "src": "apps/web/package.json", "use": "@vercel/next" },
+    { "src": "apps/api/src/index.ts", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "apps/api/src/index.ts" }
   ]
 }
