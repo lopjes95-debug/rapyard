@@ -1,0 +1,16 @@
+﻿{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@ui/*": ["packages/ui/src/*"],
+      "@utils/*": ["packages/utils/src/*"],
+      "@schema/*": ["packages/schema/src/*"],
+      "@env": ["packages/env/src/index.ts"]
+    }
+  }
+}
