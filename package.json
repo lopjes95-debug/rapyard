@@ -1,15 +1,5 @@
-{
-  "name": "rapyard",
-  "private": true,
-  "version": "1.0.0",
-  "packageManager": "pnpm@9.0.0",
-  "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "lint": "turbo lint",
-    "doctor": "node tools/doctor.js"
-  },
-  "devDependencies": {
-    "turbo": "latest"
-  }
+"scripts": {
+  "dev": "turbo dev",
+  "build": "turbo run build",
+  "lint": "turbo run lint"
 }
