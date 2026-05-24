@@ -2,6 +2,7 @@
   "name": "rapyard",
   "private": true,
   "version": "1.0.0",
+  "packageManager": "pnpm@9.0.0",
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
@@ -10,6 +11,5 @@
   },
   "devDependencies": {
     "turbo": "latest"
-  },
-  "packageManager": "pnpm@9.0.0"
+  }
 }
