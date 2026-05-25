@@ -1,0 +1,8 @@
+{
+  "name": "rapyard-worker-audio",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  }
+}
