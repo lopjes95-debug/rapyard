@@ -1,2 +1,1 @@
-export * from './Button';
-export * from './Heading';
+export const Button = () => null;

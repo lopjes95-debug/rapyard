@@ -1,0 +1,25 @@
+{
+  "name": "rapyard",
+  "private": true,
+  "packageManager": "pnpm@11.3.0",
+  "engines": {
+    "node": ">=26.2.0",
+    "pnpm": ">=11.3.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "doctor": "node tools/doctor/index.js",
+    "ry": "node tools/ry/index.mjs"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "tools/*"
+  ],
+  "devDependencies": {
+    "typescript": "5.6.3",
+    "turbo": "latest"
+  }
+}

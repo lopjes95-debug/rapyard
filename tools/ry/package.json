@@ -1,0 +1,8 @@
+{
+  "name": "@rapyard/cli",
+  "private": true,
+  "bin": {
+    "ry": "index.mjs"
+  },
+  "type": "module"
+}

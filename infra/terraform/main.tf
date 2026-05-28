@@ -1,22 +1,7 @@
 terraform {
   required_version = ">= 1.6.0"
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
 }
 
 provider "aws" {
-  region = var.aws_region
-}
-
-locals {
-  project = "rapyard"
-  env     = var.environment
-  tags = {
-    Project     = local.project
-    Environment = local.env
-  }
+  region = "us-east-1"
 }
