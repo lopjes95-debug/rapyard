@@ -1,0 +1,10 @@
+﻿{
+  "name": "rapyard",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter rapyard-web dev",
+    "build:web": "pnpm --filter rapyard-web build",
+    "dev:api": "pnpm --filter rapyard-api dev",
+    "deploy:api": "pnpm --filter rapyard-api deploy"
+  }
+}
