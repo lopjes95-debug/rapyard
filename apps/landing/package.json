@@ -1,10 +1,15 @@
-﻿{
-  "name": "rapyard",
+{
+  "name": "@rapyard/landing",
   "private": true,
   "scripts": {
-    "dev:web": "pnpm --filter rapyard-web dev",
-    "build:web": "pnpm --filter rapyard-web build",
-    "dev:api": "pnpm --filter rapyard-api dev",
-    "deploy:api": "pnpm --filter rapyard-api deploy"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@cloudflare/next-on-pages": "^1.13.16"
   }
 }
