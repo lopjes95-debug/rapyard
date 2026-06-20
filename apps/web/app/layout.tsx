@@ -1,20 +1,18 @@
-﻿export const metadata = {
-  title: "Rapyard",
-  description: "Where creators forge their sound.",
+﻿import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "RapYard",
+  description: "Creators build the yard. Listeners move the yard.",
 };
- {
-    title: "Cinematic Landing",
-    description: "A cinematic landing experience built with Next.js",
-    url: "https://cinematic-landing.vercel.app",
-    siteName: "Cinematic Landing",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
