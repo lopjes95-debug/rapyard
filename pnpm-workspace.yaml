@@ -1,5 +1,9 @@
-﻿packages:
+packages:
   - "apps/*"
   - "edge/*"
   - "packages/*"
   - "tools/*"
+allowBuilds:
+  esbuild: false
+  sharp: false
+  workerd: false
