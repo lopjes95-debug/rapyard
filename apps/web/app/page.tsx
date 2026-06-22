@@ -1,5 +1,3 @@
-import "./cinematic.css";
-
 export default function Home() {
   return (
     <main className="rapyard">

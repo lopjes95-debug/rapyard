@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "turbo dev",
     "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "wrangler": "^4.103.0"
   }
 }
-
-
