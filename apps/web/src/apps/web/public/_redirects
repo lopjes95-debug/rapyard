@@ -1,3 +1,0 @@
-﻿/* SPA redirects */
-# Always serve index.html for any path
-/*   /index.html   200

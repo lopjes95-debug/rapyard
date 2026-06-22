@@ -1,22 +1,3 @@
-{
-  "name": "rapyard",
-  "private": true,
-  "version": "1.0.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "tools/*",
-    "infra/*"
-  ],
-  "scripts": {
-    "build": "pnpm -w run build",
-    "dev": "pnpm --filter @rapyard/web dev",
-    "ry:doctor": "ts-node tools/ry/scripts/workspace-check.ts",
-    "ry:doctor:deep": "ts-node tools/ry/scripts/deep-drift-check.ts",
-    "ry:doctor:deep:fix": "ts-node tools/ry/scripts/deep-drift-check.ts --fix"
-  },
-  "devDependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.0"
-  }
+"scripts": {
+  "web": "cd apps/web && pnpm install && pnpm dev"
 }
